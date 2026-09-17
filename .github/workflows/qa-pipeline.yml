@@ -1,0 +1,27 @@
+name: QA CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  qa-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: docker build -t qa-login-app .
+
+      - name: Run Docker Container
+        run: docker run -d --name qa-login-container -p 3001:3000 qa-login-app
+
+      - name: Check Container
+        run: docker ps
+
+      - name: Check Application Logs
+        run: docker logs qa-login-container
